@@ -1,114 +1,75 @@
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <functional>
-
 using namespace std;
 
-// Simple password hashing using STL hash
-string hashPassword(string password) {
-    hash<string> hasher;
-    return to_string(hasher(password));
-}
+void addWarehouse() {
+    string name, location;
+    int capacity;
 
-// Check if user already exists
-bool userExists(string email) {
-    ifstream file("users.txt");
-    string storedEmail, storedPhone, storedPassword;
+    cout << "\n--- Add Warehouse ---\n";
+    cout << "Enter Warehouse Name: ";
+    cin >> name;
 
-    while (file >> storedEmail >> storedPhone >> storedPassword) {
-        if (storedEmail == email) {
-            return true;
-        }
-    }
-    return false;
-}
+    cout << "Enter Location: ";
+    cin >> location;
 
-// SIGN UP FUNCTION
-void signUp() {
-    string email, phone, password;
+    cout << "Enter Storage Capacity: ";
+    cin >> capacity;
 
-    cout << "\n----- SIGN UP -----\n";
-    cout << "Enter Email: ";
-    cin >> email;
-
-    if (userExists(email)) {
-        cout << "User already exists! Try logging in.\n";
-        return;
-    }
-
-    cout << "Enter Phone Number: ";
-    cin >> phone;
-
-    cout << "Enter Password: ";
-    cin >> password;
-
-    string hashedPass = hashPassword(password);
-
-    ofstream file("users.txt", ios::app);
-    file << email << " " << phone << " " << hashedPass << endl;
+    ofstream file("warehouse.txt", ios::app);
+    file << name << " " << location << " " << capacity << endl;
     file.close();
 
-    cout << "Signup Successful!\n";
+    cout << "Warehouse Added Successfully!\n";
 }
 
-// LOGIN FUNCTION
-void login() {
-    string email, password;
-    string storedEmail, storedPhone, storedPassword;
+void viewWarehouse() {
+    string name, location;
+    int capacity;
+    int total = 0;
 
-    cout << "\n----- LOGIN -----\n";
-    cout << "Enter Email: ";
-    cin >> email;
+    ifstream file("warehouse.txt");
 
-    cout << "Enter Password: ";
-    cin >> password;
+    cout << "\n--- Warehouse List ---\n";
 
-    string hashedPass = hashPassword(password);
-
-    ifstream file("users.txt");
-    bool found = false;
-
-    while (file >> storedEmail >> storedPhone >> storedPassword) {
-        if (storedEmail == email && storedPassword == hashedPass) {
-            cout << "Login Successful!\n";
-            cout << "Registered Phone: " << storedPhone << endl;
-            found = true;
-            break;
-        }
+    while (file >> name >> location >> capacity) {
+        cout << "Name: " << name << endl;
+        cout << "Location: " << location << endl;
+        cout << "Capacity: " << capacity << endl;
+        cout << "----------------------\n";
+        total++;
     }
 
-    if (!found) {
-        cout << "Invalid Email or Password!\n";
-    }
+    cout << "Total Warehouses: " << total << endl;
 
     file.close();
 }
 
-// MAIN MENU
 int main() {
     int choice;
 
     while (true) {
-        cout << "\n==== AgriShield Authentication System ====\n";
-        cout << "1. Sign Up\n";
-        cout << "2. Login\n";
+        cout << "\n==== Dashboard ====\n";
+        cout << "1. Add Warehouse\n";
+        cout << "2. View Warehouses\n";
         cout << "3. Exit\n";
-        cout << "Enter your choice: ";
+        cout << "Enter choice: ";
         cin >> choice;
 
-        switch (choice) {
-            case 1:
-                signUp();
-                break;
-            case 2:
-                login();
-                break;
-            case 3:
-                cout << "Exiting system...\n";
-                return 0;
-            default:
-                cout << "Invalid choice! Try again.\n";
+        if (choice == 1) {
+            addWarehouse();
+        }
+        else if (choice == 2) {
+            viewWarehouse();
+        }
+        else if (choice == 3) {
+            cout << "Exiting...\n";
+            break;
+        }
+        else {
+            cout << "Invalid choice!\n";
         }
     }
+
+    return 0;
 }
